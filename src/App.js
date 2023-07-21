@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Linkform from './components/Linkform';
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    let path = window.location.pathname;
+    if (path !== '/') {
+      // Forward the path to the backend for automatic redirection
+      fetch(`http://localhost:5000/api/url${path}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('Data:', data);
+          window.location.replace(data.longUrl);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      <Linkform />
     </div>
   );
-}
+};
 
 export default App;
